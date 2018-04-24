@@ -20,6 +20,7 @@ app.use(require("express-session")({
     resave: false,
     saveUninitialized: false 
 }));
+passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -32,7 +33,8 @@ app.get("/secret", function(req, res){
     res.render("secret.ejs");
 });
 
-// Authentication Routes
+// Authentication Routes ----
+// Registration
 app.get("/register", function(req, res){
     res.render("register.ejs");
 });
@@ -47,6 +49,17 @@ app.post("/register", function(req, res){
             res.redirect("/secret");
         })
     });
+});
+
+// Login
+app.get("/login", function(req, res){
+    res.render("login.ejs");
+});
+
+app.post("/login",passport.authenticate("local", {
+    successRedirect: "/secret",
+    failureRedirect: "/login"
+}), function(req, res){
 });
 
 // =======================================================
